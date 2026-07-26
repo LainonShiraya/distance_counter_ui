@@ -2,18 +2,19 @@
 import { reactive, ref } from 'vue'
 import PointFieldset from './PointFieldset.vue'
 import DistanceResult from './DistanceResult.vue'
-import type { GeoPoint } from '../utils/distance'
-import { getDistanceMeters } from '../utils/distance'
 import { validatePoint } from '@/utils/validations.ts'
+import { post } from '@/api/api'
+import type { GeoPoint } from '@/types/distance.ts'
 
 const points = reactive<{ A: GeoPoint; B: GeoPoint }>({
   A: { lat: 0, lon: 0 },
   B: { lat: 0, lon: 0 },
 })
 const distanceMeters = ref<number | null>(null)
+const distanceKilometers = ref<number | null>(null)
 const errorMessage = ref('')
 
-const calculate = () => {
+const calculate = async () => {
   errorMessage.value = validatePoint(points.A, 'Punkt A') || validatePoint(points.B, 'Punkt B')
 
   if (errorMessage.value) {
@@ -21,7 +22,25 @@ const calculate = () => {
     return
   }
 
-  distanceMeters.value = getDistanceMeters(points.A, points.B)
+  try {
+    const result = await post<{ distanceMeters: number; distanceKilometers: number }>('/getDistance.php', {
+      pointA: points.A,
+      pointB: points.B,
+    })
+
+    if (result.error) {
+      errorMessage.value = result.error
+      distanceMeters.value = null
+      return
+    }
+
+    distanceMeters.value = result.data!.distanceMeters
+    distanceKilometers.value = result.data!.distanceKilometers
+    errorMessage.value = ''
+  } catch (e) {
+    errorMessage.value = (e as Error).message || 'Network error'
+    distanceMeters.value = null
+  }
 }
 
 const updatePointA = (value: GeoPoint) => {
@@ -57,7 +76,7 @@ const updatePointB = (value: GeoPoint) => {
       </div>
     </form>
 
-    <DistanceResult :distanceMeters="distanceMeters" :errorMessage="errorMessage" />
+    <DistanceResult :distanceMeters="distanceMeters" :distanceKilometers="distanceKilometers" :errorMessage="errorMessage" />
   </section>
 </template>
 

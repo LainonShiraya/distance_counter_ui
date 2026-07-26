@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CoordinateInput from './CoordinateInput.vue'
-import type { GeoPoint } from '../utils/distance'
+import type { GeoPoint } from '../types/distance.ts'
 
 const props = defineProps<{
   title: string

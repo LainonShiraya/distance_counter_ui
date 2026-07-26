@@ -1,54 +1,87 @@
-# .
+# distance_counter_app
 
-This template should help get you started developing with Vue 3 in Vite.
+Prosta aplikacja frontendowa stworzona w **Vue 3** i **TypeScript**, umożliwiająca obliczenie odległości pomiędzy dwoma punktami geograficznymi przy użyciu backendowego API PHP.
 
-## Recommended IDE Setup
+## Funkcjonalności
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+* Wprowadzanie współrzędnych dwóch punktów (`latitude` i `longitude`)
+* Walidacja danych wejściowych
+* Wysłanie żądania do backendu PHP
+* Wyświetlenie odległości w:
 
-## Recommended Browser Setup
+  * metrach
+  * kilometrach
+* Obsługa błędów zwracanych przez API
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Wymagania
 
-## Type Support for `.vue` Imports in TS
+* Node.js 20+
+* npm
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## Instalacja
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+Zainstaluj zależności:
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Uruchomienie
+
+Utwórz plik .env i ustaw wartość ( jeśli BE działa na porcie 8000):
+VITE_API_URL=http://localhost:8000
+
+Uruchom serwer deweloperski:
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Domyślnie aplikacja będzie dostępna pod adresem:
 
-```sh
-npm run build
+```text
+http://localhost:5173
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## Konfiguracja API
 
-```sh
-npm run test:unit
+Frontend komunikuje się z backendem PHP.
+
+Domyślny adres API:
+
+```text
+http://localhost:8000
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Upewnij się, że backend jest uruchomiony przed uruchomieniem aplikacji frontendowej.
 
-```sh
-npm run lint
+Przykładowy endpoint wykorzystywany przez aplikację:
+
+```text
+POST http://localhost:8000/getDistance.php
 ```
+
+## Struktura projektu
+
+```text
+src/
+├── api/            # Komunikacja z backendem
+├── components/     # Komponenty Vue
+├── types/         # Typy
+├── utils/          # Funkcje użytkowe
+├── App.vue
+└── main.ts
+```
+
+## Technologie
+
+* Vue.js
+* TypeScript
+* Fetch API
+* CSS
+
+## Uwagi
+
+* Aplikacja wymaga działającego backendu PHP.
+* Backend powinien mieć poprawnie skonfigurowany CORS.
+* Domyślnie frontend działa na porcie `5173`, a backend na porcie `8000`.

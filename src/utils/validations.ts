@@ -1,4 +1,4 @@
-import type { GeoPoint } from '../utils/distance'
+import type { GeoPoint } from '../types/distance'
 
 export const validatePoint = (point: GeoPoint, name: string): string => {
   if (Number.isNaN(point.lat) || Number.isNaN(point.lon)) {

@@ -1,19 +1,54 @@
-import { describe, expect, it } from 'vitest'
-import { getDistanceMeters } from '../utils/distance'
+import { mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-describe('getDistanceMeters', () => {
-  it('returns 0 for identical coordinates', () => {
-    const point = { lat: 52.2297, lon: 21.0122 }
-    expect(getDistanceMeters(point, point)).toBeCloseTo(0, 6)
+import DistanceCalculator from '@/components/DistanceCalculator.vue'
+import { post } from '@/api/api'
+
+vi.mock('@/api/api', () => ({
+  post: vi.fn(),
+}))
+
+const mockedPost = vi.mocked(post)
+
+const mountCalculator = () => mount(DistanceCalculator)
+
+describe('DistanceCalculator', () => {
+  beforeEach(() => {
+    mockedPost.mockReset()
   })
 
-  it.each([
-    ['Warszawa → Kraków', { lat: 52.2297, lon: 21.0122 }, { lat: 50.0647, lon: 19.9450 }, 250000, 260000],
-    ['Gdańsk → Warszawa', { lat: 54.3520, lon: 18.6466 }, { lat: 52.2297, lon: 21.0122 }, 280000, 320000],
-  ])('%s', (_label, from, to, min, max) => {
-    const distance = getDistanceMeters(from, to)
+  it('shows validation error and does not call API for invalid latitude', async () => {
+    const wrapper = mountCalculator()
 
-    expect(distance).toBeGreaterThan(min)
-    expect(distance).toBeLessThan(max)
+    await wrapper.find('input[name="pointA-lat"]').setValue('91')
+    await wrapper.find('form').trigger('submit')
+
+    expect(mockedPost).not.toHaveBeenCalled()
+    expect(wrapper.text()).toContain('Punkt A:')
+    expect(wrapper.text()).toContain('90')
+  })
+
+  it('sends entered points and displays returned distance', async () => {
+    mockedPost.mockResolvedValue({
+      data: {
+        distanceMeters: 1000,
+        distanceKilometers: 1,
+      },
+      status: 200,
+    })
+    const wrapper = mountCalculator()
+
+    await wrapper.find('input[name="pointA-lat"]').setValue('52.2297')
+    await wrapper.find('input[name="pointA-lon"]').setValue('21.0122')
+    await wrapper.find('input[name="pointB-lat"]').setValue('50.0647')
+    await wrapper.find('input[name="pointB-lon"]').setValue('19.945')
+    await wrapper.find('form').trigger('submit')
+
+    expect(mockedPost).toHaveBeenCalledWith('/getDistance.php', {
+      pointA: { lat: 52.2297, lon: 21.0122 },
+      pointB: { lat: 50.0647, lon: 19.945 },
+    })
+    expect(wrapper.text()).toContain('1000 m')
+    expect(wrapper.text()).toContain('1 km')
   })
 })
