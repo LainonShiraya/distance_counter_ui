@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   distanceMeters: number | null
+  distanceKilometers: number | null
   errorMessage: string
 }>()
 </script>
@@ -10,9 +11,9 @@ defineProps<{
     <p class="hint">Wprowadź współrzędne w stopniach dziesiętnych, np. 52.2297 / 21.0122.</p>
     <p class="error" v-if="errorMessage">{{ errorMessage }}</p>
 
-    <div class="results" v-if="distanceMeters !== null">
+    <div class="results" v-if="distanceMeters !== null && distanceKilometers !== null" >
       <p>Odległość: <strong>{{ distanceMeters.toFixed(0) }} m</strong></p>
-      <p>Odległość: <strong>{{ (distanceMeters / 1000).toFixed(0) }} km</strong></p>
+      <p>Odległość: <strong>{{ distanceKilometers.toFixed(0) }} km</strong></p>
     </div>
   </div>
 </template>
