@@ -2,6 +2,9 @@
 
 Prosta aplikacja frontendowa stworzona w **Vue 3** i **TypeScript**, umożliwiająca obliczenie odległości pomiędzy dwoma punktami geograficznymi przy użyciu backendowego API PHP.
 
+<img width="1176" height="656" alt="image" src="https://github.com/user-attachments/assets/79598771-20f1-46a6-9491-fd27e1317cca" />
+
+
 ## Funkcjonalności
 
 * Wprowadzanie współrzędnych dwóch punktów (`latitude` i `longitude`)
